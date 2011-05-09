@@ -47,6 +47,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.services.workflow.WorkflowVariable;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
+import org.jahia.services.content.DefaultNameGenerationHelperImpl;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -91,6 +92,7 @@ public class SocialService {
     private JahiaGroupManagerService groupManagerService;
     private JahiaUserManagerService userManagerService;
     private WorkflowService workflowService;
+	private JCRContentUtils jcrContentUtils;
 
     public void addActivity(final String user, final String message, JCRSessionWrapper session) throws RepositoryException {
         addActivity(null, user, message, null, null, null, session);
@@ -121,11 +123,8 @@ public class SocialService {
             }
             
         }
-        String nodeType = JNT_SOCIAL_ACTIVITY;
-        String nodeName = nodeType.substring(nodeType.lastIndexOf(":") + 1);
 
-        nodeName = JCRContentUtils.findAvailableNodeName(activitiesNode, nodeName);
-
+        String nodeName = jcrContentUtils.generateNodeName(activitiesNode, JNT_SOCIAL_ACTIVITY);
         JCRNodeWrapper activityNode = activitiesNode.addNode(nodeName, JNT_SOCIAL_ACTIVITY);
         activityNode.setProperty("j:from", userNode);
         if (message != null) {
@@ -504,6 +503,16 @@ public class SocialService {
         this.workflowService = workflowService;
     }
 
+	/**
+     * @param jcrContentUtils the jcrContentUtils to set
+     */
+    public void setJCRContentUtils(JCRContentUtils jcrContentUtils) {
+        this.jcrContentUtils = jcrContentUtils;
+		if (jcrContentUtils.getNameGenerationHelper() != null &&
+		    jcrContentUtils.getNameGenerationHelper() instanceof DefaultNameGenerationHelperImpl) {
+		    ((DefaultNameGenerationHelperImpl)jcrContentUtils.getNameGenerationHelper()).getRandomizedNames().add(JNT_SOCIAL_ACTIVITY);
+		}
+    }
 
     private boolean execute(JCRCallback<Boolean> jcrCallback) throws RepositoryException {
         return JCRTemplate.getInstance().doExecuteWithSystemSession(jcrCallback);

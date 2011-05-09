@@ -24,6 +24,7 @@
         <property name="groupManagerService" ref="JahiaGroupManagerService"/>
         <property name="userManagerService" ref="JahiaUserManagerService"/>
         <property name="workflowService" ref="workflowService"/>
+		<property name="JCRContentUtils" ref="JCRContentUtils"/>
     </bean>
 
     <bean class="org.jahia.services.content.rules.ModuleGlobalObject">
