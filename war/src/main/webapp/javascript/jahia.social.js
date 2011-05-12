@@ -1,3 +1,5 @@
+$.ajaxSetup({cache:false})
+
 function getText(node) {
 	var title = getUserDisplayName(node);
 	var username = node['username'];
