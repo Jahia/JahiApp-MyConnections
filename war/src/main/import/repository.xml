@@ -17,7 +17,7 @@
           </user-messages>
           <user-connections divClass="user-connections" jcr:primaryType="jnt:componentLink" targetTemplate="user-connections">
             <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Connections" />
-            <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mes relations" />
+            <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mes Relations" />
           </user-connections>
         </profile-page-items>
       </contents>
