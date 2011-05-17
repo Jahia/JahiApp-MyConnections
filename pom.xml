@@ -48,6 +48,28 @@
 
   <description>This is the parent project for the social module and the libraries it provides</description>
 
+    <scm>
+        <connection>scm:git:git@github.com:Jahia/JahiApp-MyConnections.git</connection>
+        <url>scm:git:git@github.com:Jahia/JahiApp-MyConnections.git</url>
+        <developerConnection>scm:git:git@github.com:Jahia/JahiApp-MyConnections.git</developerConnection>
+    </scm>
+
+    <dependencies>
+        <!--Cross project dependencies-->
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-impl</artifactId>
+            <version>6.5-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-taglib</artifactId>
+            <version>6.5-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
   <modules>
       <module>service</module>
       <module>war</module>
