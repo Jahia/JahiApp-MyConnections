@@ -78,6 +78,7 @@
   <modules>
       <module>service</module>
       <module>war</module>
+      <module>test</module>
   </modules>
 
 </project>
