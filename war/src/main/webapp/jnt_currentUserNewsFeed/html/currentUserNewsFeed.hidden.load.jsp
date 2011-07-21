@@ -24,7 +24,7 @@
 </c:if>
 <social:get-connections var="userConnections" path="${user.path}" />
 <social:get-activities var="activities" sourcePaths="${userConnections}" />
-<template:addCacheDependency flushOnPathMatchingRegexp="${param.user}/activities/.*" />
+<template:addCacheDependency flushOnPathMatchingRegexp="\Q${param.user}\E/activities/.*" />
 
 
 <c:set target="${moduleMap}" property="currentList" value="${activities}"/>
