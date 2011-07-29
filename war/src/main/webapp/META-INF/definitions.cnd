@@ -14,9 +14,9 @@
  - j:description (string) i18n
 
 [jnt:socialMediaItem] > jnt:content, jmix:droppableContent, jmix:studioOnly
- - j:type (string)
- - j:mimeType (string)
- - j:taggedPeople (string) multiple
+ - j:type (string) nofulltext
+ - j:mimeType (string) nofulltext
+ - j:taggedPeople (string) multiple nofulltext
  - j:data (weakreference, picker[type='file']) < jnt:file
 
 [jnt:socialMediaItemCollection] > jnt:content, jmix:droppableContent, jmix:studioOnly
@@ -28,15 +28,15 @@
 [jnt:socialActivity] > jnt:content, jmix:droppableContent, jmix:studioOnly
  - j:from (weakreference) < jnt:user
  - j:message (string)
- - j:messageKey (string)
- - j:appID (string)
+ - j:messageKey (string) nofulltext
+ - j:appID (string) nofulltext
  - j:priority (double) = 0
- - j:link (string)
+ - j:link (string) nofulltext
  - j:icon (weakreference) < jmix:image
  - j:targetNode (weakreference)
- - j:targetNodeTypes (string) multiple
- - j:attribution (string)
- - j:type (string)
+ - j:targetNodeTypes (string) multiple nofulltext
+ - j:attribution (string) nofulltext
+ - j:type (string) nofulltext
  - j:likes (long)
  - j:caption (string)
  - j:description (string)
