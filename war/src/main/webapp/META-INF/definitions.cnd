@@ -55,7 +55,7 @@
 [jnt:socialActivitiesDisplay] > jnt:content, jmix:bindedComponent, jmix:userProfileComponents, jmix:studioOnly
  - j:activitiesLimit (long)
 
-[jmix:socialContent] > jmix:droppableContent, jmix:studioOnly
+[jmix:socialContent] > jmix:droppableContent, jmix:studioOnly mixin
 
 [jnt:currentUserConnections] > jnt:content, jmix:userProfileComponents, jmix:bindedComponent, jmix:studioOnly
 
