@@ -33,8 +33,7 @@
         <c:set var="fromNode" value="${currentNode.properties['j:from'].node}"/>
     </c:if>
     <h5 class='author'>${fn:escapeXml(not empty fromNode ? jcr:userFullName(fromNode) : fields["jcr:createdBy"])}</h5>
-
-    <c:set var="targetNode" value="${currentNode.properties['j:targetNode'].node}" />
+    <jcr:node var="targetNode" path="${currentNode.properties['j:targetNode'].string}"/>
     <p class="message">${fn:escapeXml(message)}&nbsp;
     <c:if test="${not empty targetNode}">
         <a href="<c:url value='${url.base}${targetNode.path}.html'/>">${fn:escapeXml(targetNode.propertiesAsString['jcr:title'])}</a>

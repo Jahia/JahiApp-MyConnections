@@ -33,7 +33,7 @@
  - j:priority (double) = 0
  - j:link (string) nofulltext
  - j:icon (weakreference) < jmix:image
- - j:targetNode (weakreference)
+ - j:targetNode (string)
  - j:targetNodeTypes (string) multiple nofulltext
  - j:attribution (string) nofulltext
  - j:type (string) nofulltext

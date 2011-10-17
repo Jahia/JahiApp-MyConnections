@@ -142,7 +142,7 @@ public class SocialService {
             activityNode.setProperty("j:messageKey", messageKey);
         }
         if (targetNode != null) {
-            activityNode.setProperty("j:targetNode", targetNode);
+            activityNode.setProperty("j:targetNode", targetNode.getPath());
         }
         if (nodeTypeList != null && !nodeTypeList.isEmpty()) {
             String[] targetNodeTypes = nodeTypeList.toArray(new String[nodeTypeList.size()]);
@@ -294,10 +294,9 @@ public class SocialService {
                 if (pathFilter != null) {
                     /* todo maybe we could filter this using the JCR-SQL2 request directly ? */
                     try {
-                        JCRPropertyWrapper targetNodeProperty = activitiesNode.getProperty("j:targetNode");
+                        String targetNodeProperty = activitiesNode.getProperty("j:targetNode")!=null?activitiesNode.getProperty("j:targetNode").getString():null;
                         if (targetNodeProperty != null) {
-                            String targetNodePath = targetNodeProperty.getNode().getPath();
-                            if (targetNodePath.startsWith(pathFilter)) {
+                            if (targetNodeProperty.startsWith(pathFilter)) {
                                 activitiesSet.add(activitiesNode);
                             }
                         }
