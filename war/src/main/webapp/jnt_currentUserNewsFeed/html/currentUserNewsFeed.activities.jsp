@@ -21,7 +21,7 @@
 <c:set target="${moduleMap}" property="pagerUrl" value="${param.pagerUrl}"/>
 
 <template:initPager totalSize="${fn:length(moduleMap.currentList)}" pageSize="${param.pageSize}" id="${renderContext.mainResource.node.identifier}"/>
-<template:displayPagination/>
+<template:displayPagination id="${renderContext.mainResource.node.identifier}"/>
 
 <c:if test="${fn:length(moduleMap.currentList) eq 0}">
     <p><fmt:message key="newsFeed.emptyResults"/></p>

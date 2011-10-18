@@ -131,7 +131,7 @@
                     </c:if>
                     <c:set target="${moduleMap}" property="pagerUrl" value="${param.pagerUrl}"/>
                     <template:initPager totalSize="${moduleMap.end}" pageSize="${currentNode.properties['numberOfMessagesPerPage'].string}" id="${renderContext.mainResource.node.identifier}"/>
-                    <template:displayPagination/>
+                    <template:displayPagination id="${renderContext.mainResource.node.identifier}"/>
 
                     <template:addCacheDependency path="${user.path}/messages/inbox"/>
                     <c:if test="${moduleMap.listTotalSize eq 0}">
