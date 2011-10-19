@@ -52,6 +52,9 @@ import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 
 import org.apache.commons.lang.StringUtils;
+import org.drools.spi.KnowledgeHelper;
+import org.jahia.services.content.rules.AddedNodeFact;
+import org.jahia.services.content.rules.ChangedPropertyFact;
 import org.jahia.services.workflow.WorkflowVariable;
 import org.slf4j.Logger;
 import org.jahia.api.Constants;
@@ -152,6 +155,57 @@ public class SocialService {
             activityNode.setProperty("j:type", activityType);
         }
         session.save();
+    }
+
+
+    public void addActivityFromRules(final String activityType, final String user, final String message, final String messageKey, final JCRNodeWrapper targetNode, final List<String> nodeTypeList, JCRSessionWrapper session, KnowledgeHelper drools) throws RepositoryException {
+        if (user == null || "".equals(user.trim())) {
+            return;
+        }
+        final JCRUser fromJCRUser = getJCRUserFromUserKey(user);
+        if (fromJCRUser == null) {
+            logger.warn("No user found, not adding activity !");
+            return;
+        }
+        JCRNodeWrapper userNode = fromJCRUser.getNode(session);
+
+        JCRNodeWrapper activitiesNode = null;
+        try {
+            activitiesNode = userNode.getNode("activities");
+            session.checkout(activitiesNode);
+        } catch (PathNotFoundException pnfe) {
+            session.checkout(userNode);
+            AddedNodeFact addedNodeFact = new AddedNodeFact(new AddedNodeFact(userNode), "activities", "jnt:contentList", drools);
+            activitiesNode = addedNodeFact.getNode();
+            drools.insert(activitiesNode);
+            if (autoSplitSettings != null) {
+                activitiesNode.addMixin(Constants.JAHIAMIX_AUTOSPLITFOLDERS);
+                drools.insert(new ChangedPropertyFact(addedNodeFact,Constants.SPLIT_CONFIG,autoSplitSettings,drools));
+                drools.insert(new ChangedPropertyFact(addedNodeFact,Constants.SPLIT_NODETYPE, "jnt:contentList",drools));
+            }
+
+        }
+
+        String nodeName = jcrContentUtils.generateNodeName(activitiesNode, JNT_SOCIAL_ACTIVITY);
+        AddedNodeFact activityNode = new AddedNodeFact(new AddedNodeFact(activitiesNode), nodeName, JNT_SOCIAL_ACTIVITY, drools);
+        drools.insert(activityNode);
+        drools.insert(new ChangedPropertyFact(activityNode,"j:from", userNode.getIdentifier(),drools));
+        if (message != null) {
+            drools.insert(new ChangedPropertyFact(activityNode,"j:message", message,drools));
+        }
+        if (messageKey != null) {
+            drools.insert(new ChangedPropertyFact(activityNode,"j:messageKey", messageKey,drools));
+        }
+        if (targetNode != null) {
+            drools.insert(new ChangedPropertyFact(activityNode,"j:targetNode", targetNode.getPath(),drools));
+        }
+        if (nodeTypeList != null && !nodeTypeList.isEmpty()) {
+            String[] targetNodeTypes = nodeTypeList.toArray(new String[nodeTypeList.size()]);
+            drools.insert(new ChangedPropertyFact(activityNode,"j:targetNodeTypes", targetNodeTypes,drools));
+        }
+        if (activityType != null) {
+            drools.insert(new ChangedPropertyFact(activityNode,"j:type", activityType,drools));
+        }
     }
 
     public boolean sendMessage(final String fromUserKey, final String toUserKey, final String subject, final String body) throws RepositoryException {

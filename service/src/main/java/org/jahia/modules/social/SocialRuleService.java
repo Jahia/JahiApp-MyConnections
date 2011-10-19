@@ -67,7 +67,7 @@ public class SocialRuleService {
         }
         final JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user);
 
-        socialService.addActivity(activityType, jahiaUser.getUserKey(), null, messageKey, nodeFact.getNode(), nodeTypeList, nodeFact.getNode().getSession());
+        socialService.addActivityFromRules(activityType, jahiaUser.getUserKey(), null, messageKey, nodeFact.getNode(), nodeTypeList, nodeFact.getNode().getSession(), drools);
     }
 
     public void sendMessage(final String fromUser, final String toUser, final String subject, final String message, AddedNodeFact nodeFact, KnowledgeHelper drools) throws RepositoryException {
