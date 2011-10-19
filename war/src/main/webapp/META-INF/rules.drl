@@ -9,6 +9,7 @@ import org.slf4j.Logger
 import java.util.Date
 import org.jahia.services.content.*
 import org.jahia.modules.social.*
+import java.lang.*
 
 expander rules.dsl
 
@@ -26,6 +27,7 @@ rule "Create docspace activity"
    when
        A new node is created
 	   - the node has the type jmix:docspace
+	   - not in operation import
    then
        Add activity "created" on node of types node.getTypes() for user user.getName() with messageKey "created.docspace"
 end
@@ -34,6 +36,7 @@ rule "Create page activity"
    when
        A new node is created
 	   - the node has the type jnt:page
+	   - not in operation import
    then
        Add activity "created" on node of types node.getTypes() for user user.getName() with messageKey "created.newpage"
 end
@@ -49,6 +52,7 @@ rule "Tagging activity"
    when
        A property j:newTag has been set on a node
         - the node has the type jmix:tagged
+        - not in operation import
    then
        Add activity "tagged" on node of types node.getTypes() for user user.getName() with messageKey "tagged.node"
 end
