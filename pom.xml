@@ -59,6 +59,21 @@
         <developerConnection>scm:git:git@github.com:Jahia/JahiApp-MyConnections.git</developerConnection>
     </scm>
 
+    <repositories>
+        <repository>
+            <id>jahiaRepository</id>
+            <name>Jahia's Maven Repository</name>
+            <url>http://maven.jahia.org/maven2</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jahiaRepository</id>
+            <name>Jahia's Maven Repository</name>
+            <url>http://maven.jahia.org/maven2</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <dependencies>
         <!--Cross project dependencies-->
         <dependency>
@@ -75,10 +90,19 @@
         </dependency>
     </dependencies>
 
-  <modules>
-      <module>service</module>
-      <module>war</module>
-      <module>test</module>
+
+   <modules>
+       <module>service</module>
+       <module>war</module>
   </modules>
+
+    <profiles>
+       <profile>
+            <id>modules-test</id>
+            <modules>
+                <module>test</module>
+            </modules>
+        </profile>
+    </profiles>
 
 </project>

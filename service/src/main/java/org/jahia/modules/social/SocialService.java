@@ -40,8 +40,18 @@
 
 package org.jahia.modules.social;
 
-import java.security.Principal;
-import java.util.*;
+import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
+import org.jahia.services.content.*;
+import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.usermanager.jcr.JCRUser;
+import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
+import org.jahia.services.workflow.WorkflowService;
+import org.jahia.services.workflow.WorkflowVariable;
+import org.slf4j.Logger;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -50,28 +60,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
-
-import org.apache.commons.lang.StringUtils;
-import org.drools.spi.KnowledgeHelper;
-import org.jahia.services.content.rules.AddedNodeFact;
-import org.jahia.services.content.rules.ChangedPropertyFact;
-import org.jahia.services.workflow.WorkflowVariable;
-import org.slf4j.Logger;
-import org.jahia.api.Constants;
-import org.jahia.services.content.DefaultNameGenerationHelperImpl;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPropertyWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.services.usermanager.jcr.JCRUser;
-import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
-import org.jahia.services.workflow.WorkflowService;
+import java.security.Principal;
+import java.util.*;
 
 /**
  * Social service class for manipulating social activities data.
@@ -145,7 +135,7 @@ public class SocialService {
             activityNode.setProperty("j:messageKey", messageKey);
         }
         if (targetNode != null) {
-            activityNode.setProperty("j:targetNode", targetNode.getPath());
+            activityNode.setProperty("j:targetNode", targetNode);
         }
         if (nodeTypeList != null && !nodeTypeList.isEmpty()) {
             String[] targetNodeTypes = nodeTypeList.toArray(new String[nodeTypeList.size()]);
@@ -155,57 +145,6 @@ public class SocialService {
             activityNode.setProperty("j:type", activityType);
         }
         session.save();
-    }
-
-
-    public void addActivityFromRules(final String activityType, final String user, final String message, final String messageKey, final JCRNodeWrapper targetNode, final List<String> nodeTypeList, JCRSessionWrapper session, KnowledgeHelper drools) throws RepositoryException {
-        if (user == null || "".equals(user.trim())) {
-            return;
-        }
-        final JCRUser fromJCRUser = getJCRUserFromUserKey(user);
-        if (fromJCRUser == null) {
-            logger.warn("No user found, not adding activity !");
-            return;
-        }
-        JCRNodeWrapper userNode = fromJCRUser.getNode(session);
-
-        JCRNodeWrapper activitiesNode = null;
-        try {
-            activitiesNode = userNode.getNode("activities");
-            session.checkout(activitiesNode);
-        } catch (PathNotFoundException pnfe) {
-            session.checkout(userNode);
-            AddedNodeFact addedNodeFact = new AddedNodeFact(new AddedNodeFact(userNode), "activities", "jnt:contentList", drools);
-            activitiesNode = addedNodeFact.getNode();
-            drools.insert(activitiesNode);
-            if (autoSplitSettings != null) {
-                activitiesNode.addMixin(Constants.JAHIAMIX_AUTOSPLITFOLDERS);
-                drools.insert(new ChangedPropertyFact(addedNodeFact,Constants.SPLIT_CONFIG,autoSplitSettings,drools));
-                drools.insert(new ChangedPropertyFact(addedNodeFact,Constants.SPLIT_NODETYPE, "jnt:contentList",drools));
-            }
-
-        }
-
-        String nodeName = jcrContentUtils.generateNodeName(activitiesNode, JNT_SOCIAL_ACTIVITY);
-        AddedNodeFact activityNode = new AddedNodeFact(new AddedNodeFact(activitiesNode), nodeName, JNT_SOCIAL_ACTIVITY, drools);
-        drools.insert(activityNode);
-        drools.insert(new ChangedPropertyFact(activityNode,"j:from", userNode.getIdentifier(),drools));
-        if (message != null) {
-            drools.insert(new ChangedPropertyFact(activityNode,"j:message", message,drools));
-        }
-        if (messageKey != null) {
-            drools.insert(new ChangedPropertyFact(activityNode,"j:messageKey", messageKey,drools));
-        }
-        if (targetNode != null) {
-            drools.insert(new ChangedPropertyFact(activityNode,"j:targetNode", targetNode.getPath(),drools));
-        }
-        if (nodeTypeList != null && !nodeTypeList.isEmpty()) {
-            String[] targetNodeTypes = nodeTypeList.toArray(new String[nodeTypeList.size()]);
-            drools.insert(new ChangedPropertyFact(activityNode,"j:targetNodeTypes", targetNodeTypes,drools));
-        }
-        if (activityType != null) {
-            drools.insert(new ChangedPropertyFact(activityNode,"j:type", activityType,drools));
-        }
     }
 
     public boolean sendMessage(final String fromUserKey, final String toUserKey, final String subject, final String body) throws RepositoryException {
@@ -348,9 +287,10 @@ public class SocialService {
                 if (pathFilter != null) {
                     /* todo maybe we could filter this using the JCR-SQL2 request directly ? */
                     try {
-                        String targetNodeProperty = activitiesNode.getProperty("j:targetNode")!=null?activitiesNode.getProperty("j:targetNode").getString():null;
+                        JCRPropertyWrapper targetNodeProperty = activitiesNode.getProperty("j:targetNode");
                         if (targetNodeProperty != null) {
-                            if (targetNodeProperty.startsWith(pathFilter)) {
+                            String targetNodePath = targetNodeProperty.getNode().getPath();
+                            if (targetNodePath.startsWith(pathFilter)) {
                                 activitiesSet.add(activitiesNode);
                             }
                         }

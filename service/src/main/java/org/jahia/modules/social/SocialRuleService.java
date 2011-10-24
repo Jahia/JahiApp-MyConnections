@@ -40,14 +40,13 @@
 
 package org.jahia.modules.social;
 
-import java.util.List;
-
-import javax.jcr.RepositoryException;
-
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.rules.AddedNodeFact;
 import org.jahia.services.usermanager.JahiaUser;
+
+import javax.jcr.RepositoryException;
+import java.util.List;
 
 /**
  * Social service class for manipulating social activities from the
@@ -67,7 +66,7 @@ public class SocialRuleService {
         }
         final JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user);
 
-        socialService.addActivityFromRules(activityType, jahiaUser.getUserKey(), null, messageKey, nodeFact.getNode(), nodeTypeList, nodeFact.getNode().getSession(), drools);
+        socialService.addActivity(activityType, jahiaUser.getUserKey(), null, messageKey, nodeFact.getNode(), nodeTypeList, nodeFact.getNode().getSession());
     }
 
     public void sendMessage(final String fromUser, final String toUser, final String subject, final String message, AddedNodeFact nodeFact, KnowledgeHelper drools) throws RepositoryException {
