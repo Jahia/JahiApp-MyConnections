@@ -41,8 +41,11 @@
 package org.jahia.modules.social;
 
 import org.apache.commons.lang.StringUtils;
+import org.drools.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
 import org.jahia.services.content.*;
+import org.jahia.services.content.rules.AddedNodeFact;
+import org.jahia.services.content.rules.ChangedPropertyFact;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -87,6 +90,8 @@ public class SocialService {
             }
 
         };
+
+     private static final String JMIX_AUTOPUBLISH = "jmix:autoPublish";
     
     private String autoSplitSettings;
     private JCRUserManagerProvider jcrUserManager;
@@ -117,6 +122,7 @@ public class SocialService {
         } catch (PathNotFoundException pnfe) {
             session.checkout(userNode);
             activitiesNode = userNode.addNode("activities", "jnt:contentList");
+            activitiesNode.addMixin(JMIX_AUTOPUBLISH);
             if (autoSplitSettings != null) {
                 activitiesNode.addMixin(Constants.JAHIAMIX_AUTOSPLITFOLDERS);
                 activitiesNode.setProperty(Constants.SPLIT_CONFIG, autoSplitSettings);
@@ -135,7 +141,7 @@ public class SocialService {
             activityNode.setProperty("j:messageKey", messageKey);
         }
         if (targetNode != null) {
-            activityNode.setProperty("j:targetNode", targetNode);
+            activityNode.setProperty("j:targetNode", targetNode.getPath());
         }
         if (nodeTypeList != null && !nodeTypeList.isEmpty()) {
             String[] targetNodeTypes = nodeTypeList.toArray(new String[nodeTypeList.size()]);
@@ -145,6 +151,57 @@ public class SocialService {
             activityNode.setProperty("j:type", activityType);
         }
         session.save();
+    }
+
+
+    public void addActivityFromRules(final String activityType, final String user, final String message, final String messageKey, final JCRNodeWrapper targetNode, final List<String> nodeTypeList, JCRSessionWrapper session, KnowledgeHelper drools) throws RepositoryException {
+        if (user == null || "".equals(user.trim())) {
+            return;
+        }
+        final JCRUser fromJCRUser = getJCRUserFromUserKey(user);
+        if (fromJCRUser == null) {
+            logger.warn("No user found, not adding activity !");
+            return;
+        }
+        JCRNodeWrapper userNode = fromJCRUser.getNode(session);
+
+        JCRNodeWrapper activitiesNode = null;
+        try {
+            activitiesNode = userNode.getNode("activities");
+            session.checkout(activitiesNode);
+        } catch (PathNotFoundException pnfe) {
+            session.checkout(userNode);
+            AddedNodeFact addedNodeFact = new AddedNodeFact(new AddedNodeFact(userNode), "activities", "jnt:contentList", drools);
+            activitiesNode = addedNodeFact.getNode();
+            drools.insert(activitiesNode);
+            if (autoSplitSettings != null) {
+                activitiesNode.addMixin(Constants.JAHIAMIX_AUTOSPLITFOLDERS);
+                drools.insert(new ChangedPropertyFact(addedNodeFact,Constants.SPLIT_CONFIG,autoSplitSettings,drools));
+                drools.insert(new ChangedPropertyFact(addedNodeFact,Constants.SPLIT_NODETYPE, "jnt:contentList",drools));
+            }
+
+        }
+
+        String nodeName = jcrContentUtils.generateNodeName(activitiesNode, JNT_SOCIAL_ACTIVITY);
+        AddedNodeFact activityNode = new AddedNodeFact(new AddedNodeFact(activitiesNode), nodeName, JNT_SOCIAL_ACTIVITY, drools);
+        drools.insert(activityNode);
+        drools.insert(new ChangedPropertyFact(activityNode,"j:from", userNode.getIdentifier(),drools));
+        if (message != null) {
+            drools.insert(new ChangedPropertyFact(activityNode,"j:message", message,drools));
+        }
+        if (messageKey != null) {
+            drools.insert(new ChangedPropertyFact(activityNode,"j:messageKey", messageKey,drools));
+        }
+        if (targetNode != null) {
+            drools.insert(new ChangedPropertyFact(activityNode,"j:targetNode", targetNode.getPath(),drools));
+        }
+        if (nodeTypeList != null && !nodeTypeList.isEmpty()) {
+            String[] targetNodeTypes = nodeTypeList.toArray(new String[nodeTypeList.size()]);
+            drools.insert(new ChangedPropertyFact(activityNode,"j:targetNodeTypes", targetNodeTypes,drools));
+        }
+        if (activityType != null) {
+            drools.insert(new ChangedPropertyFact(activityNode,"j:type", activityType,drools));
+        }
     }
 
     public boolean sendMessage(final String fromUserKey, final String toUserKey, final String subject, final String body) throws RepositoryException {
@@ -287,10 +344,9 @@ public class SocialService {
                 if (pathFilter != null) {
                     /* todo maybe we could filter this using the JCR-SQL2 request directly ? */
                     try {
-                        JCRPropertyWrapper targetNodeProperty = activitiesNode.getProperty("j:targetNode");
+                        String targetNodeProperty = activitiesNode.getProperty("j:targetNode")!=null?activitiesNode.getProperty("j:targetNode").getString():null;
                         if (targetNodeProperty != null) {
-                            String targetNodePath = targetNodeProperty.getNode().getPath();
-                            if (targetNodePath.startsWith(pathFilter)) {
+                            if (targetNodeProperty.startsWith(pathFilter)) {
                                 activitiesSet.add(activitiesNode);
                             }
                         }
@@ -388,6 +444,7 @@ public class SocialService {
                 } catch (PathNotFoundException pnfe) {
                     session.checkout(leftUser);
                     leftConnectionsNode = leftUser.addNode("connections", "jnt:contentList");
+                    leftConnectionsNode.addMixin(JMIX_AUTOPUBLISH);
                 }
                 JCRNodeWrapper leftUserConnection = leftConnectionsNode.addNode(leftUser.getName() + "-" + rightUser.getName(), SocialService.JNT_SOCIAL_CONNECTION);
                 leftUserConnection.setProperty("j:connectedFrom", leftUser);
@@ -404,6 +461,7 @@ public class SocialService {
                 } catch (PathNotFoundException pnfe) {
                     session.checkout(rightUser);
                     rightConnectionsNode = rightUser.addNode("connections", "jnt:contentList");
+                    rightConnectionsNode.addMixin(JMIX_AUTOPUBLISH);
                 }
                 JCRNodeWrapper rightUserConnection = rightConnectionsNode.addNode(rightUser.getName() + "-" + leftUser.getName(), SocialService.JNT_SOCIAL_CONNECTION);
                 rightUserConnection.setProperty("j:connectedFrom", rightUser);
