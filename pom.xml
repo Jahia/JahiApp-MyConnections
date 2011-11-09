@@ -39,19 +39,19 @@
     please contact the sales department at sales@jahia.com.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <artifactId>jahia-modules</artifactId>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>jahia-modules</artifactId>
+        <groupId>org.jahia.modules</groupId>
+        <version>6.6.0.0-SNAPSHOT</version>
+    </parent>
     <groupId>org.jahia.modules</groupId>
-    <version>6.6.0.0-SNAPSHOT</version>
-  </parent>
-  <groupId>org.jahia.modules</groupId>
-  <artifactId>social-parent</artifactId>
-  <version>1.2-SNAPSHOT</version>
-  <name>Jahia Social Parent</name>
-  <packaging>pom</packaging>
+    <artifactId>social-parent</artifactId>
+    <version>1.2-SNAPSHOT</version>
+    <name>Jahia Social Parent</name>
+    <packaging>pom</packaging>
 
-  <description>This is the parent project for the social module and the libraries it provides</description>
+    <description>This is the parent project for the social module and the libraries it provides</description>
 
     <scm>
         <connection>scm:git:git@github.com:Jahia/JahiApp-MyConnections.git</connection>
@@ -74,14 +74,17 @@
         </pluginRepository>
     </pluginRepositories>
 
-   <modules>
-       <module>service</module>
-       <module>war</module>
-  </modules>
+    <modules>
+        <module>service</module>
+        <module>war</module>
+    </modules>
 
     <profiles>
-       <profile>
+        <profile>
             <id>modules-test</id>
+            <activation>
+                <jdk>[1.6,)</jdk>
+            </activation>
             <modules>
                 <module>test</module>
             </modules>
