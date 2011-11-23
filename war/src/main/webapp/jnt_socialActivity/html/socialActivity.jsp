@@ -54,7 +54,7 @@
     <jcr:node var="targetNode" path="${currentNode.properties['j:targetNode'].string}"/>
     <p class="message">${fn:escapeXml(message)}&nbsp;
     <c:if test="${not empty targetNode}">
-        <a href="<c:url value='${url.base}${targetNode.path}.html'/>">${fn:escapeXml(targetNode.propertiesAsString['jcr:title'])}</a>
+        <a href="<c:url value='${url.base}${targetNode.path}.html'/>">${fn:escapeXml(targetNode.displayableName)}</a>
     </c:if>
     </p>
 
