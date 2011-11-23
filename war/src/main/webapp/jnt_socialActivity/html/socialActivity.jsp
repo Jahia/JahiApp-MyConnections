@@ -1,3 +1,6 @@
+<%@ page import="javax.servlet.jsp.jstl.fmt.LocalizationContext" %>
+<%@ page import="org.jahia.services.render.Resource" %>
+<%@ page import="org.jahia.utils.i18n.JahiaResourceBundle" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -11,7 +14,22 @@
 <c:set var="fields" value="${currentNode.propertiesAsString}"/>
 <c:set var="message" value="${fields['j:message']}" />
 <c:if test="${not empty fields['j:messageKey']}">
-    <c:set var="message"><fmt:message key="${fields['j:messageKey']}"/></c:set>
+    <c:if test="${fn:contains(fields['j:messageKey'],':')}">
+        <c:set value="${fn:substringAfter(fields['j:messageKey'],':')}" var="key"/>
+        <c:set value="${fn:substringBefore(fields['j:messageKey'],':')}" var="bundleName"/>
+
+        <%
+            Resource currentResource = (Resource)pageContext.findAttribute("currentResource");
+            LocalizationContext ctx = new LocalizationContext(
+                    new JahiaResourceBundle(currentResource.getLocale(), (String) pageContext.findAttribute("bundleName")),
+                    currentResource.getLocale());
+            pageContext.setAttribute("bundle",ctx);
+        %>
+        <c:set var="message"><fmt:message bundle="${bundle}" key="${key}"/></c:set>
+    </c:if>
+    <c:if test="${not fn:contains(fields['j:messageKey'],':')}">
+        <c:set var="message"><fmt:message key="${fields['j:messageKey']}"/></c:set>
+    </c:if>
 </c:if>
 
 <li>
