@@ -34,7 +34,7 @@
 
 <li>
     <div class='image'>
-        <div class='itemImage itemImageLeft'>
+        <div class='itemImageLeft'>
 			<jcr:nodeProperty var="picture" node="${fromUser}" name="j:picture"/>
 			<c:if test="${not empty picture}">
 	            <a href="<c:url value='${url.base}${fromUser.path}.html'/>"><img

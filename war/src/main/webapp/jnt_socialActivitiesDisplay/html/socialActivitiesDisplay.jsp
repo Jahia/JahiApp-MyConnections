@@ -24,7 +24,7 @@
         <c:if test="${not jcr:isNodeType(bindedComponent, 'jnt:user')}">
             <social:get-acl-connections var="connections" path="${bindedComponent.path}"/>
         </c:if>
-        <social:get-activities var="activities" sourcePaths="${connections}" pathFilter="${bindedComponent.path}"/>
+        <social:get-activities var="activities" sourcePaths="${connections}" pathFilter="${bindedComponent.path}" limit="${activitiesLimit.long}"/>
         <c:if test="${empty activities}">
             <fmt:message key="message.noActivitiesFound"/>
         </c:if>
