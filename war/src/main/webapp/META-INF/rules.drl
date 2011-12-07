@@ -23,15 +23,6 @@ global JCRStoreProvider provider
 global SocialRuleService socialService
 ###############################################################################
 
-rule "Create docspace activity"
-   when
-       A new node is created
-	   - the node has the type jmix:docspace
-	   - not in operation import
-   then
-       Add activity "created" on node of types node.getTypes() for user user.getName() with messageKey "created.docspace"
-end
-
 rule "Create page activity"
    when
        A new node is created
@@ -39,13 +30,6 @@ rule "Create page activity"
 	   - not in operation import
    then
        Add activity "created" on node of types node.getTypes() for user user.getName() with messageKey "created.newpage"
-end
-
-rule "Create file in docspace activity"
-   when
-      The type jmix:docspaceFile has been assigned to a node
-   then
-       Add activity "created" on node of types node.getTypes() for user user.getName() with messageKey "created.docspacefile"
 end
 
 rule "Tagging activity"

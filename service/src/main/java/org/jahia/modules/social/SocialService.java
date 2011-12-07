@@ -284,11 +284,16 @@ public class SocialService {
                 JCRUser jcrUser = getJCRUserFromUserKey(principalParts[1]);
                 userPaths.add(jcrUser.getNode(jcrSessionWrapper).getPath());
             } else if ("g".equals(principalParts[0])) {
-                JahiaGroup group = groupManagerService.lookupGroup(principalParts[1]);
-                Set<Principal> recursiveGroupMembers = group.getRecursiveUserMembers();
-                for (Principal groupMember : recursiveGroupMembers) {
-                    JCRUser jcrUser = getJCRUserFromUserKey(groupMember.getName());
-                    userPaths.add(jcrUser.getNode(jcrSessionWrapper).getPath());                    
+                JahiaGroup group = groupManagerService.lookupGroup(targetNode.getResolveSite().getID(),principalParts[1]);
+                if (group == null) {
+                    group = groupManagerService.lookupGroup(principalParts[1]);
+                }
+                if (group != null) {
+                    Set<Principal> recursiveGroupMembers = group.getRecursiveUserMembers();
+                    for (Principal groupMember : recursiveGroupMembers) {
+                        JCRUser jcrUser = getJCRUserFromUserKey(groupMember.getName());
+                        userPaths.add(jcrUser.getNode(jcrSessionWrapper).getPath());
+                    }
                 }
             }
         }

@@ -1,3 +1,6 @@
+<%@ page import="javax.servlet.jsp.jstl.fmt.LocalizationContext" %>
+<%@ page import="org.jahia.services.render.Resource" %>
+<%@ page import="org.jahia.utils.i18n.JahiaResourceBundle" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -11,12 +14,27 @@
 <c:set var="fields" value="${currentNode.propertiesAsString}"/>
 <c:set var="message" value="${fields['j:message']}" />
 <c:if test="${not empty fields['j:messageKey']}">
-    <c:set var="message"><fmt:message key="${fields['j:messageKey']}"/></c:set>
+    <c:if test="${fn:contains(fields['j:messageKey'],':')}">
+        <c:set value="${fn:substringAfter(fields['j:messageKey'],':')}" var="key"/>
+        <c:set value="${fn:substringBefore(fields['j:messageKey'],':')}" var="bundleName"/>
+
+        <%
+            Resource currentResource = (Resource)pageContext.findAttribute("currentResource");
+            LocalizationContext ctx = new LocalizationContext(
+                    new JahiaResourceBundle(currentResource.getLocale(), (String) pageContext.findAttribute("bundleName")),
+                    currentResource.getLocale());
+            pageContext.setAttribute("bundle",ctx);
+        %>
+        <c:set var="message"><fmt:message bundle="${bundle}" key="${key}"/></c:set>
+    </c:if>
+    <c:if test="${not fn:contains(fields['j:messageKey'],':')}">
+        <c:set var="message"><fmt:message key="${fields['j:messageKey']}"/></c:set>
+    </c:if>
 </c:if>
 
 <li>
     <div class='image'>
-        <div class='itemImage itemImageLeft'>
+        <div class='itemImageLeft'>
 			<jcr:nodeProperty var="picture" node="${fromUser}" name="j:picture"/>
 			<c:if test="${not empty picture}">
 	            <a href="<c:url value='${url.base}${fromUser.path}.html'/>"><img
@@ -36,7 +54,7 @@
     <jcr:node var="targetNode" path="${currentNode.properties['j:targetNode'].string}"/>
     <p class="message">${fn:escapeXml(message)}&nbsp;
     <c:if test="${not empty targetNode}">
-        <a href="<c:url value='${url.base}${targetNode.path}.html'/>">${fn:escapeXml(targetNode.propertiesAsString['jcr:title'])}</a>
+        <a href="<c:url value='${url.base}${targetNode.path}.html'/>">${fn:escapeXml(targetNode.displayableName)}</a>
     </c:if>
     </p>
 
