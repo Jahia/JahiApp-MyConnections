@@ -7,7 +7,7 @@
 
 <c:set var="fromUser" value="${currentNode.properties['j:from'].node}"/>
 <div class="userMessagesDetail" id="social-message-detail-${currentNode.identifier}"><!--start boxsocial -->
-<h4>Message Detail</h4>
+<h4><fmt:message key="message.details"/></h4>
                 <ul class="messageActionList">
                    <li><a class="messageActionDelete" title="<fmt:message key='deleteMessage'/>" href="#delete" info="${currentNode.identifier}"><span><fmt:message
                         key="deleteMessage"/></span></a></li>
