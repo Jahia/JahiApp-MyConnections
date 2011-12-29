@@ -7,7 +7,7 @@
 
 <c:set var="fromUser" value="${currentNode.properties['j:from'].node}"/>
 <div class="userMessagesDetail" id="social-message-detail-${currentNode.identifier}"><!--start boxsocial -->
-<h4>Message Detail</h4>
+<h4><fmt:message key="message.details"/></h4>
                 <ul class="messageActionList">
                    <li><a class="messageActionDelete" title="<fmt:message key='deleteMessage'/>" href="#delete" info="${currentNode.identifier}"><span><fmt:message
                         key="deleteMessage"/></span></a></li>
@@ -28,7 +28,7 @@
                     </div>
                 </div>
                 <h5 class="messageSenderName">
-                    <a href="${usl.base}${fromUser.path}.html"><c:out value="${jcr:userFullName(fromUser)}"/></a>
+                    <a href="${url.base}${fromUser.path}.html"><c:out value="${jcr:userFullName(fromUser)}"/></a>
                 </h5><jcr:nodeProperty node="${currentNode}" name="jcr:lastModified" var="lastModified"/><span class="timestamp"><fmt:formatDate
 value="${lastModified.time}" pattern="yyyy/MM/dd HH:mm"/></span>
                 <h5>${fn:escapeXml(currentNode.propertiesAsString['j:subject'])}</h5>
