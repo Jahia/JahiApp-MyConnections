@@ -6,7 +6,7 @@ function getText(node) {
 	return username != title ? title + " (" + username + ")" : username; 
 }
 
-function searchUsers(findPrincipalURL, userURL, term, i18nAdd) {
+function searchUsers(findPrincipalURL, userURL, term, i18nAdd, myusername) {
 	$.ajax({
         url: findPrincipalURL,
         type: 'post',
@@ -17,16 +17,18 @@ function searchUsers(findPrincipalURL, userURL, term, i18nAdd) {
         success: function(data) {
             $("#searchUsersResult").html("");
             $.each(data, function(i, item) {
-                $("#searchUsersResult").append(
+                if (item['username'] != myusername) {
+                    $("#searchUsersResult").append(
                         $("<tr/>")
-                        		//.append($("<td/>").append($("<img/>").attr("src", item.properties['j:picture'])))
-                                .append($("<td/>").attr("title", item['username']).text(getUserDisplayName(item)))
-                                .append($("<td/>").attr("align", "center").append($("<a/>").attr("href", "#add")
-                                .attr("class", "social-add").attr("title", i18nAdd ? i18nAdd : '').click(function () {
-                            requestConnection(userURL + '.requestsocialconnection.do', item['userKey']);
-                            return false;
-                        })))
-                        );
+                            //.append($("<td/>").append($("<img/>").attr("src", item.properties['j:picture'])))
+                            .append($("<td/>").attr("title", item['username']).text(getUserDisplayName(item)))
+                            .append($("<td/>").attr("align", "center").append($("<a/>").attr("href", "#add")
+                            .attr("class", "social-add").attr("title", i18nAdd ? i18nAdd : '').click(function () {
+                                requestConnection(userURL + '.requestsocialconnection.do', item['userKey']);
+                                return false;
+                            })))
+                    );
+                }
                 if (i == 10) return false;
             });
         }
