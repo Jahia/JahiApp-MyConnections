@@ -95,6 +95,9 @@
             cacheLength: 1,
             parse: function (data) {
                 return $.map(data, function(row) {
+                    if (row['username'] == '${renderContext.user.username}') {
+                        return null;
+                    }
                     return {
                         data: row,
                         value: row['username'],
@@ -127,7 +130,7 @@
         $("#searchUsersSubmit").click(function() {
             // validate and process form here
             var term = $("input#searchUsersTerm").val();
-            searchUsers('${url.findUser}', '<c:url value="${url.base}${user.path}"/>', term, "<fmt:message key='addAsFriend'/>");
+            searchUsers('${url.findUser}', '<c:url value="${url.base}${user.path}"/>', term, "<fmt:message key='addAsFriend'/>", '${renderContext.user.username}');
             return false;
         });
 
