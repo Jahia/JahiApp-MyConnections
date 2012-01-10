@@ -41,54 +41,72 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>jahia-modules</artifactId>
+        <artifactId>social-parent</artifactId>
         <groupId>org.jahia.modules</groupId>
-        <version>6.6.0.0-SNAPSHOT</version>
+        <version>1.2-SNAPSHOT</version>
     </parent>
     <groupId>org.jahia.modules</groupId>
-    <artifactId>social-parent</artifactId>
-    <version>1.2-SNAPSHOT</version>
-    <name>Jahia Social Parent</name>
-    <packaging>pom</packaging>
+    <artifactId>myconnections</artifactId>
+    <name>Jahia MyConnections</name>
+    <packaging>war</packaging>
 
-    <description>This is the parent project for the social module and the libraries it provides</description>
+    <description>This is a module for running on a Jahia server.</description>
 
-    <scm>
-        <connection>scm:git:git@github.com:Jahia/JahiApp-MyConnections.git</connection>
-        <url>scm:git:git@github.com:Jahia/JahiApp-MyConnections.git</url>
-        <developerConnection>scm:git:git@github.com:Jahia/JahiApp-MyConnections.git</developerConnection>
-    </scm>
+    <dependencies>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>2.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.modules</groupId>
+            <artifactId>social-service</artifactId>
+            <version>1.2-SNAPSHOT</version>
+        </dependency>
 
-    <repositories>
-        <repository>
-            <id>jahiaRepository</id>
-            <name>Jahia's Maven Repository</name>
-            <url>http://maven.jahia.org/maven2</url>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>jahiaRepository</id>
-            <name>Jahia's Maven Repository</name>
-            <url>http://maven.jahia.org/maven2</url>
-        </pluginRepository>
-    </pluginRepositories>
+    </dependencies>
 
-    <modules>
-        <module>service</module>
-        <module>war</module>
-    </modules>
-
-    <profiles>
-        <profile>
-            <id>modules-test</id>
-            <activation>
-                <jdk>[1.6,)</jdk>
-            </activation>
-            <modules>
-                <module>test</module>
-            </modules>
-        </profile>
-    </profiles>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${war.plugin.version}</version>
+                <configuration>
+                    <warSourceExcludes>resources/*.properties</warSourceExcludes>
+                    <webResources>
+                        <resource>
+                            <directory>${project.build.directory}/native2ascii</directory>
+                            <targetPath>resources</targetPath>
+                        </resource>
+                    </webResources>
+                    <archive>
+                        <manifestEntries>
+                            <Implementation-Title>${project.name}</Implementation-Title>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Implementation-Vendor>${jahia.manifest.vendor.name}</Implementation-Vendor>
+                            <Implementation-Vendor-Id>${jahia.manifest.vendor.id}</Implementation-Vendor-Id>
+                            <Implementation-URL>${jahia.manifest.vendor.url}</Implementation-URL>
+                            <Specification-Title>${project.name}</Specification-Title>
+                            <Specification-Version>${project.version}</Specification-Version>
+                            <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
+                            <package-name>${project.name}</package-name>
+                            <depends>Jahia Search,Jahia User Profile, Jahia Social Module</depends>
+                            <root-folder>${project.artifactId}</root-folder>
+                            <module-type>profileModule</module-type>
+                        </manifestEntries>
+                    </archive>
+                    <archiveClasses>true</archiveClasses>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
