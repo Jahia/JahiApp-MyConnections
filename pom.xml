@@ -47,7 +47,7 @@
     </parent>
     <groupId>org.jahia.modules</groupId>
     <artifactId>myconnections</artifactId>
-    <name>Jahia MyConnections</name>
+    <name>Jahia My Connections</name>
     <packaging>war</packaging>
 
     <description>This is a module for running on a Jahia server.</description>
