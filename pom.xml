@@ -52,6 +52,12 @@
 
     <description>This is a module for running on a Jahia server.</description>
 
+    <scm>
+        <connection>scm:git:git@github.com:Jahia/JahiApp-MyConnections.git</connection>
+        <url>scm:git:git@github.com:Jahia/JahiApp-MyConnections.git</url>
+        <developerConnection>scm:git:git@github.com:Jahia/JahiApp-MyConnections.git</developerConnection>
+    </scm>
+	
     <dependencies>
         <dependency>
             <groupId>javax.servlet</groupId>
