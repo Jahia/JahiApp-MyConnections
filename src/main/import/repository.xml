@@ -53,7 +53,7 @@
               <j:translation_en jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="My Friends" />
               <j:translation_fr jcr:language="fr" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="Mes Amis" />
               <content-list j:className="simple" j:view="unordered" jcr:mixinTypes="jmix:renderable jmix:listOrdered" jcr:primaryType="jnt:contentList">
-                <currentUserTasks j:view="simple" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:currentUserTasks" viewWorkflowTasks="true" workflowTypes="jBPM:user-connection" />
+                <currentUserTasks filterOnTypes="workflow" j:view="simple" jcr:mixinTypes="jmix:renderable" jcr:primaryType="jnt:currentUserTasks" />
               </content-list>
               <currentUserConnections jcr:primaryType="jnt:currentUserConnections" />
             </my-friends>
