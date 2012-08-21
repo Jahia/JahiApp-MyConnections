@@ -15,4 +15,9 @@
 
     <bean class="org.jahia.modules.myconnections.RemoveSocialMessageAction"/>
 
+    <bean name="userConnectionWorkflow" class="org.jahia.services.workflow.WorklowTypeRegistration">
+        <property name="type" value="connections"/>
+        <property name="definition" value="user-connection"/>
+    </bean>
+
 </beans>
