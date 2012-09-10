@@ -122,7 +122,7 @@
                             <Specification-Version>${project.version}</Specification-Version>
                             <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                             <package-name>${project.name}</package-name>
-                            <depends>search,profile,social,tasks</depends>
+                            <depends>search,profile,social,tasks,skins,default-skins</depends>
                             <root-folder>${project.artifactId}</root-folder>
                             <module-type>profileModule</module-type>
                         </manifestEntries>
