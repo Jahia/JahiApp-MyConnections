@@ -1,43 +1,43 @@
 /******************************************************************************
 * icon Add
 ******************************************************************************/
-.bodywrapper a.social-add {
+ a.social-add {
 	width:16px;
 	height:16px;
 	display:block;
 	background: url(img/add.png) no-repeat top right;
 }
-.bodywrapper a.social-add span {
+ a.social-add span {
 	display:none
 }
 /******************************************************************************
 * social-list
 ******************************************************************************/
 
-.bodywrapper ul.social-list  {
+ ul.social-list  {
 	position:relative;
 	margin:0;
 	list-style:none;
 	padding:0
 }
-.bodywrapper .social-list li {
+ .social-list li {
 	padding:10px;
 	margin:0;
 	margin-bottom:0px;
 	list-style:none;
 	background: url(img/hr.png) repeat-x bottom left;
 }
-.bodywrapper .social-list li p {
+ .social-list li p {
 	padding:0;
 }
-.bodywrapper .social-list li:last-child {
+ .social-list li:last-child {
 	background:none;
 }
-.bodywrapper ul.social-list h4 {
+ ul.social-list h4 {
 	border-bottom:none;
 }
 /*Social list actions*/
-.bodywrapper ul.social-list a.social-list-remove {
+ ul.social-list a.social-list-remove {
 	width:16px;
 	height:16px;
 	display:block;
@@ -45,10 +45,10 @@
 	float:right;
 	margin-left:4px;
 }
-.bodywrapper ul.social-list a.social-list-remove span {
+ ul.social-list a.social-list-remove span {
 	display:none
 }
-.bodywrapper ul.social-list a.social-list-sendmessage {
+ ul.social-list a.social-list-sendmessage {
 	width:16px;
 	height:16px;
 	display:block;
@@ -56,11 +56,11 @@
 	float:right;
 	margin-left:4px;
 }
-.bodywrapper ul.social-list a.social-list-sendmessage span {
+ ul.social-list a.social-list-sendmessage span {
 	display:none
 }
 
-.bodywrapper ul.social-list div.thumbnail {
+ ul.social-list div.thumbnail {
 	background-color: white;
 	padding: 5px;
 	border:1px solid #B9DDFA;
@@ -68,71 +68,71 @@
 /******************************************************************************
 * statusUpdateForm
 ******************************************************************************/
-.bodywrapper .statusUpdateForm {
+ .statusUpdateForm {
 	margin:0
 }
-.bodywrapper .statusUpdateForm p{
+ .statusUpdateForm p{
 	margin:0.5em 0;
 	padding:0;
 }
-.bodywrapper .statusUpdateForm fieldset {
+ .statusUpdateForm fieldset {
 	border:none
 }
-.bodywrapper .statusUpdateForm legend {
+ .statusUpdateForm legend {
 	display:none
 }
-.bodywrapper .statusUpdateForm label {
+ .statusUpdateForm label {
 display:block
 }
-.bodywrapper .statusUpdateForm input, .bodywrapper .statusUpdateForm textarea {
+ .statusUpdateForm input,  .statusUpdateForm textarea {
 	width:98%;
 	clear:both
 }
-.bodywrapper .statusUpdateForm input.button{
+ .statusUpdateForm input.button{
 	width:auto
 }
 /******************************************************************************
 *  activitiesList
 ******************************************************************************/
 
-.bodywrapper ul.activitiesList  {
+ ul.activitiesList  {
 	position:relative;
 	margin:0;
 	list-style:none;
 	padding:0
 }
-.bodywrapper .activitiesList li {
+ .activitiesList li {
 	padding:10px;
 	margin:0;
 	margin-bottom:0px;
 	list-style:none;
 	background: url(img/hr.png) repeat-x bottom left;
 }
-.bodywrapper .activitiesList li:last-child {
+ .activitiesList li:last-child {
 	background:none;
 }
-.bodywrapper .activitiesList .itemImageLeft {
+ .activitiesList .itemImageLeft {
 	margin-right:20px
 }
-.bodywrapper .activitiesList .itemImageRight {
+ .activitiesList .itemImageRight {
 	margin-left:20px
 }
 
-.bodywrapper .activitiesList li p {
+ .activitiesList li p {
 	padding:0;
 }
-.bodywrapper .activitiesList li.last {
+ .activitiesList li.last {
 	background:none;
 }
 
-.bodywrapper .activitiesList .timestamp {
+ .activitiesList .timestamp {
 	font-size:0.8em;
 	font-weight:normal;
 	line-height:1.2em;
 	margin-left:0.5em;
 }
 
-.bodywrapper .activitiesList h5.author {
+ .activitiesList h5.author {
 	display:inline;
 	margin:0;
 	padding:0;
@@ -142,20 +142,20 @@ display:block
 *  Users Messages list
 ******************************************************************************/
 
-.bodywrapper ul.userMessagesList  {
+ ul.userMessagesList  {
 	position:relative;
 	margin:0;
 	list-style:none;
 	padding:0;
 }
-.bodywrapper .userMessagesList li {
+ .userMessagesList li {
 	padding:10px;
 	margin:0;
 	margin-bottom:0px;
 	list-style:none;
 	background: url(img/hr.png) repeat-x bottom left;
 }
-.bodywrapper .userMessagesDetail {
+ .userMessagesDetail {
 	padding:10px;
 	margin:0;
 	margin-bottom:0px;
@@ -163,54 +163,54 @@ display:block
 	border:1px solid #ccc
 
 }
-.bodywrapper .userMessagesList li:last-child {
+ .userMessagesList li:last-child {
 	background:none;
 }
-.bodywrapper .userMessagesList .itemImageLeft,
-.bodywrapper .userMessagesDetail .itemImageLeft {
+ .userMessagesList .itemImageLeft,
+ .userMessagesDetail .itemImageLeft {
 	margin-right:20px
 }
-.bodywrapper .userMessagesList .itemImageRight,
-.bodywrapper .userMessagesDetail .itemImageRight {
+ .userMessagesList .itemImageRight,
+ .userMessagesDetail .itemImageRight {
 	margin-left:20px
 }
 
-.bodywrapper .userMessagesList li p,
-.bodywrapper .userMessagesDetail p {
+ .userMessagesList li p,
+ .userMessagesDetail p {
 	padding:0;
 }
-.bodywrapper .userMessagesList li.last {
+ .userMessagesList li.last {
 	background:none;
 }
 
-.bodywrapper .userMessagesList .timestamp,
-.bodywrapper .userMessagesDetail .timestamp {
+ .userMessagesList .timestamp,
+ .userMessagesDetail .timestamp {
 	font-size:0.8em;
 	font-weight:normal;
 	line-height:1.2em;
 	margin-left:0.5em;
 }
 
-.bodywrapper .userMessagesList h5.messageSenderName,
-.bodywrapper .userMessagesDetail h5.messageSenderName {
+ .userMessagesList h5.messageSenderName,
+ .userMessagesDetail h5.messageSenderName {
 	display:inline;
 	margin:0;
 	padding:0;
 	font-weight:bold;
 }
 
-.bodywrapper ul.messageActionList {
+ ul.messageActionList {
 	padding:0;
 	margin:0;
 	float:right;
 }
-.bodywrapper ul.messageActionList li{
+ ul.messageActionList li{
 	display:inline;
 	background:none;
 	padding:0;
 	margin:0;
 }
-.bodywrapper ul.messageActionList a.messageActionReply {
+ ul.messageActionList a.messageActionReply {
 	width:16px;
 	height:16px;
 	display:block;
@@ -218,10 +218,10 @@ display:block
 	float:right;
 	margin-left:4px;
 }
-.bodywrapper ul.messageActionList a.messageActionReply span {
+ ul.messageActionList a.messageActionReply span {
 	display:none
 }
-.bodywrapper ul.messageActionList a.messageActionDelete {
+ ul.messageActionList a.messageActionDelete {
 	width:16px;
 	height:16px;
 	display:block;
@@ -229,7 +229,7 @@ display:block
 	float:right;
 	margin-left:4px;
 }
-.bodywrapper ul.messageActionList a.messageActionDelete span {
+ ul.messageActionList a.messageActionDelete span {
 	display:none
 }
 

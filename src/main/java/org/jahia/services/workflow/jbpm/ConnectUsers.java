@@ -69,7 +69,7 @@ public class ConnectUsers implements ExternalActivityBehaviour {
 
         String connectionType = (String) execution.getVariable("connectionType");
 
-        SocialService socialService = (SocialService) SpringContextSingleton.getModuleBean("socialService");
+        SocialService socialService = (SocialService) SpringContextSingleton.getBeanInModulesContext("socialService");
         if (socialService != null) {
             socialService.createSocialConnection(from, to, connectionType);
         }
