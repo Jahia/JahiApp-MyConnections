@@ -38,46 +38,42 @@
  * please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.services.workflow.jbpm;
-
-import java.util.Map;
+package org.jahia.modules.myconnections.workflow.jbpm;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.modules.social.SocialService;
-import org.jahia.services.SpringContextSingleton;
-import org.jbpm.api.activity.ActivityExecution;
-import org.jbpm.api.activity.ExternalActivityBehaviour;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.usermanager.JahiaPrincipal;
+import org.jahia.services.workflow.jbpm.JBPMTaskAssignmentListener;
+import org.jbpm.api.model.OpenExecution;
+import org.jbpm.api.task.Assignable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Action handler for creating a social connection between two users.
+ * Assignment handler for user connection task.
  * 
  * @author Serge Huber
  */
-public class ConnectUsers implements ExternalActivityBehaviour {
+public class UserConnectionTaskAssignementListener extends JBPMTaskAssignmentListener {
+    
+    private static final long serialVersionUID = 3356236148908996978L;
 
-    private static final long serialVersionUID = 483037196668735262L;
+    /**
+     * sets the actorId and candidates for the given task.
+     */
+    public void assign(final Assignable assignable, OpenExecution execution) throws Exception {
 
-    public void execute(ActivityExecution execution) throws Exception {
-        String from = (String) execution.getVariable("from");
-        if (StringUtils.isEmpty(from)) {
-            throw new IllegalArgumentException("Expected non-empty parameter value for 'from'. Got: " + from);
-        }
         String to = (String) execution.getVariable("to");
-        if (StringUtils.isEmpty(to)) {
-            throw new IllegalArgumentException("Expected non-empty parameter value for 'to'. Got: " + to);
+        if (StringUtils.isNotEmpty(to)) {
+            assignable.addCandidateUser(to);
         }
+        List<JahiaPrincipal> p = new ArrayList<JahiaPrincipal>();
+        p.add(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(to));
 
-        String connectionType = (String) execution.getVariable("connectionType");
+        assignable.addCandidateGroup(ServicesRegistry.getInstance().getJahiaGroupManagerService()
+                .getAdministratorGroup(0).getGroupKey());
 
-        SocialService socialService = (SocialService) SpringContextSingleton.getBeanInModulesContext("socialService");
-        if (socialService != null) {
-            socialService.createSocialConnection(from, to, connectionType);
-        }
-        execution.takeDefaultTransition();
+        createTask(assignable, execution, p);
     }
-
-    public void signal(ActivityExecution execution, String signalName, Map<String, ?> parameters) throws Exception {
-        // do nothing
-    }
-
 }

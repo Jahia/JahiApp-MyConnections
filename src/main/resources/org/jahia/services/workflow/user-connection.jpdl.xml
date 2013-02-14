@@ -5,11 +5,11 @@
         <transition to="approve"/>
     </start>
     <task g="227,223,80,40" name="approve">
-        <assignment-handler class="org.jahia.services.workflow.jbpm.UserConnectionTaskAssignementListener"/>
+        <assignment-handler class="org.jahia.modules.myconnections.workflow.jbpm.UserConnectionTaskAssignementListener"/>
         <transition g="-26,4" name="reject" to="end"/>
         <transition g="-18,-17" name="accept" to="connect"/>
     </task>
-    <custom class="org.jahia.services.workflow.jbpm.ConnectUsers" g="380,165,80,40" name="connect">
+    <custom class="org.jahia.modules.myconnections.workflow.jbpm.ConnectUsers" g="380,165,80,40" name="connect">
       <transition name="to end" to="end" g="-2,-22"/>
     </custom>
     <end g="509,227,80,40" name="end"/>
