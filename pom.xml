@@ -104,6 +104,7 @@
                     <instructions>
                         <Jahia-Depends>search,profile,social,tasks,skins,default-skins</Jahia-Depends>
                         <Jahia-Module-Type>profileModule</Jahia-Module-Type>
+                        <Import-Package>*,org.jahia.modules.social.taglib,${jahia.modules.importPackage}</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
