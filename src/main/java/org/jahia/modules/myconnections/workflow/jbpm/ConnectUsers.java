@@ -43,7 +43,7 @@ package org.jahia.modules.myconnections.workflow.jbpm;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.modules.social.SocialService;
+import org.jahia.modules.sociallib.SocialService;
 import org.jahia.services.SpringContextSingleton;
 import org.jbpm.api.activity.ActivityExecution;
 import org.jbpm.api.activity.ExternalActivityBehaviour;

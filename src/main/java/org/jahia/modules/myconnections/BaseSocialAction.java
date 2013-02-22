@@ -41,7 +41,7 @@
 package org.jahia.modules.myconnections;
 
 import org.jahia.bin.Action;
-import org.jahia.modules.social.SocialService;
+import org.jahia.modules.sociallib.SocialService;
 
 /**
  * Base class for social actions.
