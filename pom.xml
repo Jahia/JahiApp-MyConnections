@@ -102,7 +102,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Jahia-Depends>search,profile,social,tasks,skins,default-skins</Jahia-Depends>
+                        <Jahia-Depends>search,profile,social-lib,tasks,skins,default-skins</Jahia-Depends>
                         <Jahia-Module-Type>profileModule</Jahia-Module-Type>
                         <Import-Package>*,org.jahia.modules.sociallib.taglib,${jahia.modules.importPackage}</Import-Package>
                     </instructions>
