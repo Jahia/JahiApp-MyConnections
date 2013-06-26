@@ -43,28 +43,42 @@ package org.jahia.modules.myconnections.workflow.jbpm;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaPrincipal;
-import org.jahia.services.workflow.jbpm.JBPMTaskAssignmentListener;
-import org.jbpm.api.model.OpenExecution;
-import org.jbpm.api.task.Assignable;
+import org.jahia.services.workflow.jbpm.JBPMTaskLifeCycleEventListener;
+import org.jbpm.services.task.events.AfterTaskAddedEvent;
+import org.jbpm.services.task.utils.ContentMarshallerHelper;
+import org.kie.api.task.model.Content;
+import org.kie.api.task.model.Task;
 
+import javax.enterprise.event.Observes;
+import javax.enterprise.event.Reception;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Assignment handler for user connection task.
- * 
+ *
  * @author Serge Huber
  */
-public class UserConnectionTaskAssignementListener extends JBPMTaskAssignmentListener {
-    
+public class UserConnectionTaskAssignementListener extends JBPMTaskLifeCycleEventListener {
+
     private static final long serialVersionUID = 3356236148908996978L;
 
     /**
      * sets the actorId and candidates for the given task.
      */
-    public void assign(final Assignable assignable, OpenExecution execution) throws Exception {
 
-        String to = (String) execution.getVariable("to");
+    @Override
+    public void afterTaskAddedEvent(@Observes(notifyObserver = Reception.IF_EXISTS) @AfterTaskAddedEvent Task ti) {
+
+        Content taskContent = getTaskService().getContentById(ti.getTaskData().getDocumentContentId());
+        Object contentData = ContentMarshallerHelper.unmarshall(taskContent.getContent(), getEnvironment());
+        Map<String, Object> taskParameters = null;
+        if (contentData instanceof Map) {
+            taskParameters = (Map<String, Object>) contentData;
+        }
+
+        String to = (String) taskParameters.get("to");
         if (StringUtils.isNotEmpty(to)) {
             assignable.addCandidateUser(to);
         }
@@ -74,6 +88,6 @@ public class UserConnectionTaskAssignementListener extends JBPMTaskAssignmentLis
         assignable.addCandidateGroup(ServicesRegistry.getInstance().getJahiaGroupManagerService()
                 .getAdministratorGroup(0).getGroupKey());
 
-        createTask(assignable, execution, p);
+        createTask(ti, taskParameters, p);
     }
 }
