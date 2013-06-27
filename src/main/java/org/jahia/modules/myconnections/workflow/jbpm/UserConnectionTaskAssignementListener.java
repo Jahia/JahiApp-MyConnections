@@ -69,9 +69,9 @@ public class UserConnectionTaskAssignementListener extends JBPMTaskLifeCycleEven
      */
 
     @Override
-    public void afterTaskAddedEvent(@Observes(notifyObserver = Reception.IF_EXISTS) @AfterTaskAddedEvent Task ti) {
+    public void afterTaskAddedEvent(@Observes(notifyObserver = Reception.IF_EXISTS) @AfterTaskAddedEvent Task task) {
 
-        Content taskContent = getTaskService().getContentById(ti.getTaskData().getDocumentContentId());
+        Content taskContent = getTaskService().getContentById(task.getTaskData().getDocumentContentId());
         Object contentData = ContentMarshallerHelper.unmarshall(taskContent.getContent(), getEnvironment());
         Map<String, Object> taskParameters = null;
         if (contentData instanceof Map) {
@@ -88,6 +88,6 @@ public class UserConnectionTaskAssignementListener extends JBPMTaskLifeCycleEven
         assignable.addCandidateGroup(ServicesRegistry.getInstance().getJahiaGroupManagerService()
                 .getAdministratorGroup(0).getGroupKey());
 
-        createTask(ti, taskParameters, p);
+        createTask(task, taskParameters, p);
     }
 }
