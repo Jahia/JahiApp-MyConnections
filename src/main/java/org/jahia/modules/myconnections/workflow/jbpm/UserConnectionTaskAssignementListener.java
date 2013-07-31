@@ -43,14 +43,21 @@ package org.jahia.modules.myconnections.workflow.jbpm;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaPrincipal;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.jbpm.JBPMTaskLifeCycleEventListener;
 import org.jbpm.services.task.events.AfterTaskAddedEvent;
+import org.jbpm.services.task.impl.model.GroupImpl;
+import org.jbpm.services.task.impl.model.PeopleAssignmentsImpl;
+import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.kie.api.task.model.Content;
+import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.PeopleAssignments;
 import org.kie.api.task.model.Task;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
+import javax.jcr.RepositoryException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -78,16 +85,28 @@ public class UserConnectionTaskAssignementListener extends JBPMTaskLifeCycleEven
             taskParameters = (Map<String, Object>) contentData;
         }
 
+        PeopleAssignments peopleAssignments = new PeopleAssignmentsImpl();
+        List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>();
         String to = (String) taskParameters.get("to");
+        JahiaUser jahiaUser = null;
         if (StringUtils.isNotEmpty(to)) {
-            assignable.addCandidateUser(to);
+            jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(to);
+            potentialOwners.add(new UserImpl((jahiaUser).getUserKey()));
         }
-        List<JahiaPrincipal> p = new ArrayList<JahiaPrincipal>();
-        p.add(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(to));
 
-        assignable.addCandidateGroup(ServicesRegistry.getInstance().getJahiaGroupManagerService()
-                .getAdministratorGroup(0).getGroupKey());
+        List<OrganizationalEntity> administrators = new ArrayList<OrganizationalEntity>();
+        administrators.add(new GroupImpl(ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(null).getGroupKey()));
+        peopleAssignments.getBusinessAdministrators().addAll(administrators);
+        peopleAssignments.getPotentialOwners().addAll(potentialOwners);
 
-        createTask(task, taskParameters, p);
+        if (jahiaUser != null) {
+            List<JahiaPrincipal> jahiaPrincipals = new ArrayList<JahiaPrincipal>();
+            jahiaPrincipals.add(jahiaUser);
+            try {
+                createTask(task, taskParameters, jahiaPrincipals);
+            } catch (RepositoryException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+        }
     }
 }
