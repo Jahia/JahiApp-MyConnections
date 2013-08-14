@@ -43,6 +43,7 @@ package org.jahia.modules.myconnections.workflow.jbpm;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.modules.sociallib.SocialService;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.workflow.jbpm.custom.AbstractWorkItemHandler;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -54,7 +55,7 @@ import javax.jcr.RepositoryException;
  *
  * @author Serge Huber
  */
-public class ConnectUsersWorkItemHandler implements WorkItemHandler {
+public class ConnectUsersWorkItemHandler extends AbstractWorkItemHandler implements WorkItemHandler {
 
     private static final long serialVersionUID = 483037196668735262L;
 
