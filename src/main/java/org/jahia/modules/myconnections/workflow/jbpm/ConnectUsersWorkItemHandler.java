@@ -85,6 +85,6 @@ public class ConnectUsersWorkItemHandler extends AbstractWorkItemHandler impleme
 
     @Override
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        manager.abortWorkItem(workItem.getId());
     }
 }
