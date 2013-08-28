@@ -45,12 +45,11 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.jbpm.JBPMTaskLifeCycleEventListener;
+import org.jbpm.runtime.manager.impl.task.SynchronizedTaskService;
 import org.jbpm.services.task.events.AfterTaskAddedEvent;
 import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.PeopleAssignmentsImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
-import org.jbpm.services.task.utils.ContentMarshallerHelper;
-import org.kie.api.task.model.Content;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.PeopleAssignments;
 import org.kie.api.task.model.Task;
@@ -67,7 +66,7 @@ import java.util.Map;
  *
  * @author Serge Huber
  */
-public class UserConnectionTaskAssignementListener extends JBPMTaskLifeCycleEventListener {
+public class UserConnectionTaskLifeCycleEventListener extends JBPMTaskLifeCycleEventListener {
 
     private static final long serialVersionUID = 3356236148908996978L;
 
@@ -78,16 +77,12 @@ public class UserConnectionTaskAssignementListener extends JBPMTaskLifeCycleEven
     @Override
     public void afterTaskAddedEvent(@Observes(notifyObserver = Reception.IF_EXISTS) @AfterTaskAddedEvent Task task) {
 
-        Content taskContent = getTaskService().getContentById(task.getTaskData().getDocumentContentId());
-        Object contentData = ContentMarshallerHelper.unmarshall(taskContent.getContent(), getEnvironment());
-        Map<String, Object> taskParameters = null;
-        if (contentData instanceof Map) {
-            taskParameters = (Map<String, Object>) contentData;
-        }
+        Map<String, Object> taskInputParameters = getTaskInputParameters(task);
+        Map<String, Object> taskOutputParameters = getTaskOutputParameters(task, taskInputParameters);
 
         PeopleAssignments peopleAssignments = new PeopleAssignmentsImpl();
         List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>();
-        String to = (String) taskParameters.get("to");
+        String to = (String) taskInputParameters.get("to");
         JahiaUser jahiaUser = null;
         if (StringUtils.isNotEmpty(to)) {
             jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(to);
@@ -103,7 +98,9 @@ public class UserConnectionTaskAssignementListener extends JBPMTaskLifeCycleEven
             List<JahiaPrincipal> jahiaPrincipals = new ArrayList<JahiaPrincipal>();
             jahiaPrincipals.add(jahiaUser);
             try {
-                createTask(task, taskParameters, jahiaPrincipals);
+                createTask(task, taskInputParameters, taskOutputParameters, jahiaPrincipals);
+                ((SynchronizedTaskService) taskService).addContent(task.getId(), taskOutputParameters);
+
             } catch (RepositoryException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }

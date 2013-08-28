@@ -29,5 +29,9 @@
         <property name="name" value="Connect users"/>
     </bean>
 
+    <bean id="userConnectTaskLifeCycleEventListener" parent="abstractTaskLifeCycleEventListener"
+          class="org.jahia.modules.myconnections.workflow.jbpm.UserConnectionTaskLifeCycleEventListener">
+        <property name="name" value="userConnectTaskLifeCycleEventListener"/>
+    </bean>
 
 </beans>

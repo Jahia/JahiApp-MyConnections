@@ -6,7 +6,7 @@
     </start>
     <task g="227,223,80,40" name="approve">
         <assignment-handler
-                class="org.jahia.modules.myconnections.workflow.jbpm.UserConnectionTaskAssignementListener"/>
+                class="org.jahia.modules.myconnections.workflow.jbpm.UserConnectionTaskLifeCycleEventListener"/>
         <transition g="-26,4" name="reject" to="end"/>
         <transition g="-18,-17" name="accept" to="connect"/>
     </task>
