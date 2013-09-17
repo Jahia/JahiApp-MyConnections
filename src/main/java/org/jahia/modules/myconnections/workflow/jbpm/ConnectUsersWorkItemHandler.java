@@ -40,44 +40,51 @@
 
 package org.jahia.modules.myconnections.workflow.jbpm;
 
-import java.util.Map;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.modules.sociallib.SocialService;
 import org.jahia.services.SpringContextSingleton;
-import org.jbpm.api.activity.ActivityExecution;
-import org.jbpm.api.activity.ExternalActivityBehaviour;
+import org.jahia.services.workflow.jbpm.custom.AbstractWorkItemHandler;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkItemManager;
+
+import javax.jcr.RepositoryException;
 
 /**
  * Action handler for creating a social connection between two users.
- * 
+ *
  * @author Serge Huber
  */
-public class ConnectUsers implements ExternalActivityBehaviour {
+public class ConnectUsersWorkItemHandler extends AbstractWorkItemHandler implements WorkItemHandler {
 
     private static final long serialVersionUID = 483037196668735262L;
 
-    public void execute(ActivityExecution execution) throws Exception {
-        String from = (String) execution.getVariable("from");
+    @Override
+    public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+        String from = (String) workItem.getParameter("from");
         if (StringUtils.isEmpty(from)) {
             throw new IllegalArgumentException("Expected non-empty parameter value for 'from'. Got: " + from);
         }
-        String to = (String) execution.getVariable("to");
+        String to = (String) workItem.getParameter("to");
         if (StringUtils.isEmpty(to)) {
             throw new IllegalArgumentException("Expected non-empty parameter value for 'to'. Got: " + to);
         }
 
-        String connectionType = (String) execution.getVariable("connectionType");
+        String connectionType = (String) workItem.getParameter("connectionType");
 
         SocialService socialService = (SocialService) SpringContextSingleton.getBeanInModulesContext("socialService");
         if (socialService != null) {
-            socialService.createSocialConnection(from, to, connectionType);
+            try {
+                socialService.createSocialConnection(from, to, connectionType);
+            } catch (RepositoryException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
         }
-        execution.takeDefaultTransition();
+        manager.completeWorkItem(workItem.getId(), null);
     }
 
-    public void signal(ActivityExecution execution, String signalName, Map<String, ?> parameters) throws Exception {
-        // do nothing
+    @Override
+    public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+        manager.abortWorkItem(workItem.getId());
     }
-
 }

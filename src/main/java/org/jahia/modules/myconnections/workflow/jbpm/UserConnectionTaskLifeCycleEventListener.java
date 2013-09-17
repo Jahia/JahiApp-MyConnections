@@ -43,37 +43,67 @@ package org.jahia.modules.myconnections.workflow.jbpm;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaPrincipal;
-import org.jahia.services.workflow.jbpm.JBPMTaskAssignmentListener;
-import org.jbpm.api.model.OpenExecution;
-import org.jbpm.api.task.Assignable;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.workflow.jbpm.JBPMTaskLifeCycleEventListener;
+import org.jbpm.runtime.manager.impl.task.SynchronizedTaskService;
+import org.jbpm.services.task.events.AfterTaskAddedEvent;
+import org.jbpm.services.task.impl.model.GroupImpl;
+import org.jbpm.services.task.impl.model.PeopleAssignmentsImpl;
+import org.jbpm.services.task.impl.model.UserImpl;
+import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.PeopleAssignments;
+import org.kie.api.task.model.Task;
 
+import javax.enterprise.event.Observes;
+import javax.enterprise.event.Reception;
+import javax.jcr.RepositoryException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Assignment handler for user connection task.
- * 
+ *
  * @author Serge Huber
  */
-public class UserConnectionTaskAssignementListener extends JBPMTaskAssignmentListener {
-    
+public class UserConnectionTaskLifeCycleEventListener extends JBPMTaskLifeCycleEventListener {
+
     private static final long serialVersionUID = 3356236148908996978L;
 
     /**
      * sets the actorId and candidates for the given task.
      */
-    public void assign(final Assignable assignable, OpenExecution execution) throws Exception {
 
-        String to = (String) execution.getVariable("to");
+    @Override
+    public void afterTaskAddedEvent(@Observes(notifyObserver = Reception.IF_EXISTS) @AfterTaskAddedEvent Task task) {
+
+        Map<String, Object> taskInputParameters = getTaskInputParameters(task);
+        Map<String, Object> taskOutputParameters = getTaskOutputParameters(task, taskInputParameters);
+
+        PeopleAssignments peopleAssignments = new PeopleAssignmentsImpl();
+        List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>();
+        String to = (String) taskInputParameters.get("to");
+        JahiaUser jahiaUser = null;
         if (StringUtils.isNotEmpty(to)) {
-            assignable.addCandidateUser(to);
+            jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(to);
+            potentialOwners.add(new UserImpl((jahiaUser).getUserKey()));
         }
-        List<JahiaPrincipal> p = new ArrayList<JahiaPrincipal>();
-        p.add(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(to));
 
-        assignable.addCandidateGroup(ServicesRegistry.getInstance().getJahiaGroupManagerService()
-                .getAdministratorGroup(0).getGroupKey());
+        List<OrganizationalEntity> administrators = new ArrayList<OrganizationalEntity>();
+        administrators.add(new GroupImpl(ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(null).getGroupKey()));
+        peopleAssignments.getBusinessAdministrators().addAll(administrators);
+        peopleAssignments.getPotentialOwners().addAll(potentialOwners);
 
-        createTask(assignable, execution, p);
+        if (jahiaUser != null) {
+            List<JahiaPrincipal> jahiaPrincipals = new ArrayList<JahiaPrincipal>();
+            jahiaPrincipals.add(jahiaUser);
+            try {
+                createTask(task, taskInputParameters, taskOutputParameters, jahiaPrincipals);
+                ((SynchronizedTaskService) taskService).addContent(task.getId(), taskOutputParameters);
+
+            } catch (RepositoryException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+        }
     }
 }
