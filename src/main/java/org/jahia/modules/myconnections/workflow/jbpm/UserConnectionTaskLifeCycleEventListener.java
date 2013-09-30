@@ -91,8 +91,8 @@ public class UserConnectionTaskLifeCycleEventListener extends JBPMTaskLifeCycleE
 
         List<OrganizationalEntity> administrators = new ArrayList<OrganizationalEntity>();
         administrators.add(new GroupImpl(ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(null).getGroupKey()));
-        peopleAssignments.getBusinessAdministrators().addAll(administrators);
-        peopleAssignments.getPotentialOwners().addAll(potentialOwners);
+//        peopleAssignments.getBusinessAdministrators().addAll(administrators);
+//        peopleAssignments.getPotentialOwners().addAll(potentialOwners);
 
         if (jahiaUser != null) {
             List<JahiaPrincipal> jahiaPrincipals = new ArrayList<JahiaPrincipal>();
