@@ -11,6 +11,7 @@
       <drools:import name="java.util.List"/>
       <drools:import name="java.util.Locale"/>
       <drools:import name="org.jahia.services.workflow.WorkflowDefinition"/>
+      <drools:import name="org.jahia.services.workflow.WorkflowVariable"/>
     </bpmn2:extensionElements>
     <bpmn2:property id="publicationOutcome" itemSubjectRef="ItemDefinition_901"/>
     <bpmn2:property id="nodeId" itemSubjectRef="ItemDefinition_901"/>
