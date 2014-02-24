@@ -6,7 +6,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="social" uri="http://www.jahia.org/tags/socialLib" %>
 <template:include view="hidden.header"/>
-<template:addCacheDependency flushOnPathMatchingRegexp="\Q${param.user}\E/activities/.*" />
+<template:addCacheDependency flushOnPathMatchingRegexp="\\\\Q${param.user}\\\\E/activities/.*" />
 
 
 <c:set var="ps" value="?pagerUrl=${url.mainResource}"/>
