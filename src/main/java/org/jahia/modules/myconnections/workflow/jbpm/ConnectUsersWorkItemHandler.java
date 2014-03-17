@@ -47,6 +47,7 @@ import org.jahia.services.workflow.jbpm.custom.AbstractWorkItemHandler;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 
@@ -58,6 +59,7 @@ import javax.jcr.RepositoryException;
 public class ConnectUsersWorkItemHandler extends AbstractWorkItemHandler implements WorkItemHandler {
 
     private static final long serialVersionUID = 483037196668735262L;
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ConnectUsersWorkItemHandler.class);
 
     @Override
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
@@ -77,7 +79,7 @@ public class ConnectUsersWorkItemHandler extends AbstractWorkItemHandler impleme
             try {
                 socialService.createSocialConnection(from, to, connectionType);
             } catch (RepositoryException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                logger.error("Error creating social connection", e);
             }
         }
         manager.completeWorkItem(workItem.getId(), null);

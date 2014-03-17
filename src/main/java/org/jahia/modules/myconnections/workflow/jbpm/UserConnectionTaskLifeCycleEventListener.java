@@ -53,10 +53,12 @@ import org.jbpm.services.task.impl.model.UserImpl;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.PeopleAssignments;
 import org.kie.api.task.model.Task;
+import org.slf4j.Logger;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
 import javax.jcr.RepositoryException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -69,6 +71,7 @@ import java.util.Map;
 public class UserConnectionTaskLifeCycleEventListener extends JBPMTaskLifeCycleEventListener {
 
     private static final long serialVersionUID = 3356236148908996978L;
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(UserConnectionTaskLifeCycleEventListener.class);    
 
     /**
      * sets the actorId and candidates for the given task.
@@ -102,7 +105,7 @@ public class UserConnectionTaskLifeCycleEventListener extends JBPMTaskLifeCycleE
                 ((SynchronizedTaskService) taskService).addContent(task.getId(), taskOutputParameters);
 
             } catch (RepositoryException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                logger.error("Error while creating task", e);                
             }
         }
     }
