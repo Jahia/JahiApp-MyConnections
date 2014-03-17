@@ -83,17 +83,17 @@ public class UserConnectionTaskLifeCycleEventListener extends JBPMTaskLifeCycleE
         Map<String, Object> taskInputParameters = getTaskInputParameters(task);
         Map<String, Object> taskOutputParameters = getTaskOutputParameters(task, taskInputParameters);
 
-        PeopleAssignments peopleAssignments = new PeopleAssignmentsImpl();
-        List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>();
+//        PeopleAssignments peopleAssignments = new PeopleAssignmentsImpl();
+//        List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>();
         String to = (String) taskInputParameters.get("to");
         JahiaUser jahiaUser = null;
         if (StringUtils.isNotEmpty(to)) {
             jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(to);
-            potentialOwners.add(new UserImpl((jahiaUser).getUserKey()));
+//            potentialOwners.add(new UserImpl((jahiaUser).getUserKey()));
         }
 
-        List<OrganizationalEntity> administrators = new ArrayList<OrganizationalEntity>();
-        administrators.add(new GroupImpl(ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(null).getGroupKey()));
+//        List<OrganizationalEntity> administrators = new ArrayList<OrganizationalEntity>();
+//        administrators.add(new GroupImpl(ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(null).getGroupKey()));
 //        peopleAssignments.getBusinessAdministrators().addAll(administrators);
 //        peopleAssignments.getPotentialOwners().addAll(potentialOwners);
 
